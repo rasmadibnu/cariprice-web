@@ -1,0 +1,16 @@
+{
+  "appId": "com.cariprice.app",
+  "productName": "Cari Price",
+  "directories": {
+    "output": "dist"
+  },
+  "files": ["dist/electron/**/*"],
+  "win": {
+    "target": "nsis"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true
+  }
+}
