@@ -1,8 +1,8 @@
 {
   "name": "otr-web",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Request OTR Scrape",
+  "description": "Find price from e-commerce autos with scraping method",
+  "productName": "Cari Price",
   "author": "Rasmad Ibnu <rasmad.ibnu@smartfinance.co.id>",
   "private": true,
   "scripts": {
