@@ -39,6 +39,7 @@ export const useOTRStore = defineStore("otr", {
     carListUnsort: [],
     locations: [],
     expanded_location: false,
+    expanded_source: false,
     lastSearch: "",
     sort: "",
     metadata: null,
@@ -48,6 +49,7 @@ export const useOTRStore = defineStore("otr", {
     payload: { ...initalPayload },
     detailOTR: [],
     otrform: { ...initalForm },
+    sourceList: [],
     source: [],
   }),
 
@@ -74,11 +76,6 @@ export const useOTRStore = defineStore("otr", {
       return this.cars
         .map((e) => e.price)
         .reduce((partial, a) => partial + a, 0);
-    },
-    getSource() {
-      let uniq = countUnique(this.carList.map((e) => e.source_name));
-      this.source = uniq.map((e) => e.value);
-      return uniq;
     },
     getAverage() {
       // prettier-ignore
@@ -201,6 +198,7 @@ export const useOTRStore = defineStore("otr", {
             this.carListUnsort = this.carList;
             this.metadata = res.data.metadata;
             this.lastSearch = query;
+            this.setFilterSource();
           })
           .catch((err) => {
             console.log(err);
@@ -229,9 +227,28 @@ export const useOTRStore = defineStore("otr", {
         }
       });
     },
+    setFilterSource() {
+      this.sourceList = countUnique(
+        this.carListUnsort.map((e) => e.source_name)
+      );
+      this.source = this.sourceList.map((e) => {
+        return e.value;
+      });
+      if (this.source.length > 0) {
+        this.expanded_source = true;
+      } else {
+        this.expanded_source = false;
+      }
+    },
+    filterSource(state) {
+      console.log(state);
+      this.carList = this.carList.filter((e) => {
+        return this.source.includes(e.source_name);
+      });
+    },
     filterLocation() {
       if (this.locations.length > 0) {
-        this.carList = this.carListUnsort.filter((e) => {
+        this.carList = this.carList.filter((e) => {
           return this.locations.includes(e.location);
         });
       } else {

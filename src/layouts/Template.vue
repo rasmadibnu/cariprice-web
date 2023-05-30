@@ -136,6 +136,33 @@
       <template v-if="!isOTRPage"
         ><div class="text-h6 tw-px-4 tw-pt-4">Filter</div>
         <q-expansion-item
+          v-model="otr.expanded_source"
+          icon="o_travel_explore"
+          header-class="tw-text-lg tw-font-bold"
+          label="Source"
+        >
+          <q-card>
+            <q-card-section class="q-pa-none tw-ml-2">
+              <q-scroll-area
+                style="max-height: 300px"
+                :style="{ height: 35 * otr.sourceList.length + 'px' }"
+              >
+                <q-option-group
+                  :options="otr.sourceList"
+                  type="toggle"
+                  v-model="otr.source"
+                  @update:model-value="(val) => otr.filterSource(val)"
+                >
+                  <template v-slot:label="props">
+                    {{ props.label }}
+                    <q-badge rounded>{{ props.count }}</q-badge>
+                  </template>
+                </q-option-group>
+              </q-scroll-area>
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+        <q-expansion-item
           v-model="otr.expanded_location"
           icon="o_pin_drop"
           header-class="tw-text-lg tw-font-bold"
@@ -143,12 +170,15 @@
         >
           <q-card>
             <q-card-section class="q-pa-none tw-ml-2">
-              <q-scroll-area style="height: 300px">
+              <q-scroll-area
+                style="max-height: 300px"
+                :style="{ height: 35 * otr.getLocations.length + 'px' }"
+              >
                 <q-option-group
                   :options="otr.getLocations"
                   type="checkbox"
                   v-model="otr.locations"
-                  @update:model-value="otr.filterLocation()"
+                  @update:model-value="(val) => otr.filterLocation(val)"
                 >
                   <template v-slot:label="props">
                     {{ props.label }}

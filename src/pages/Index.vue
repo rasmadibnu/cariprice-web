@@ -26,7 +26,31 @@
           }}</span></template
         >
       </div>
-      <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
+      <!-- <q-select
+        label="Source"
+        :options="otr.getSource"
+        v-model="otr.source"
+        @update:model-value="otr.filterSource()"
+        use-chips
+        multiple
+        map-options
+        emit-value
+        class="tw-w-full"
+        borderless
+      >
+        <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+          <q-item v-bind="itemProps">
+            <q-item-section> {{ opt.label }} ({{ opt.count }}) </q-item-section>
+            <q-item-section side>
+              <q-checkbox
+                :model-value="selected"
+                @update:model-value="toggleOption(opt)"
+              />
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select> -->
+      <div class="tw-flex tw-justify-between tw-mt-2 tw-items-center tw-w-full">
         <div class="tw-flex tw-items-center tw-gap-4">
           <q-select
             label="Sort By"
@@ -55,29 +79,6 @@
           </template>
         </q-input>
       </div>
-      <q-select
-        label="Source"
-        :options="otr.getSource"
-        v-model="otr.source"
-        use-chips
-        multiple
-        map-options
-        emit-value
-        class="tw-w-full tw-mt-2"
-        borderless
-      >
-        <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-          <q-item v-bind="itemProps">
-            <q-item-section> {{ opt.label }} ({{ opt.count }}) </q-item-section>
-            <q-item-section side>
-              <q-checkbox
-                :model-value="selected"
-                @update:model-value="toggleOption(opt)"
-              />
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
       <q-table
         class="tw-mt-2"
         :rows="otr.carList"
