@@ -231,6 +231,9 @@ export const useOTRStore = defineStore("otr", {
       this.sourceList = countUnique(
         this.carListUnsort.map((e) => e.source_name)
       );
+      this.sourceList = this.sourceList.map((e) => {
+        return { ...e, is_active: true };
+      });
       this.source = this.sourceList.map((e) => {
         return e.value;
       });
@@ -241,10 +244,19 @@ export const useOTRStore = defineStore("otr", {
       }
     },
     filterSource(state) {
-      console.log(state);
-      this.carList = this.carList.filter((e) => {
-        return this.source.includes(e.source_name);
-      });
+      if (state) {
+        this.carList = this.carListUnsort.filter((e) => {
+          return this.sourceList.find((el) => {
+            return el.label == e.source_name;
+          }).is_active;
+        });
+      } else {
+        this.carList = this.carList.filter((e) => {
+          return this.sourceList.find((el) => {
+            return el.label == e.source_name;
+          }).is_active;
+        });
+      }
     },
     filterLocation() {
       if (this.locations.length > 0) {
@@ -280,10 +292,7 @@ export const useOTRStore = defineStore("otr", {
     },
     addUnit() {
       return new Promise((resolve, reject) => {
-        this.detailOTR.push({
-          ...this.otrform,
-          created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
-        });
+        this.detailOTR.push(this.otrform);
         this.resetForm();
         resolve();
       });

@@ -147,17 +147,18 @@
                 style="max-height: 300px"
                 :style="{ height: 35 * otr.sourceList.length + 'px' }"
               >
-                <q-option-group
-                  :options="otr.sourceList"
-                  type="toggle"
-                  v-model="otr.source"
-                  @update:model-value="(val) => otr.filterSource(val)"
+                <q-toggle
+                  v-for="(source, index) in otr.sourceList"
+                  class="tw-w-full"
+                  v-bind:key="index"
+                  v-model="otr.sourceList[index].is_active"
+                  @update:model-value="
+                    otr.filterSource(otr.sourceList[index].is_active)
+                  "
                 >
-                  <template v-slot:label="props">
-                    {{ props.label }}
-                    <q-badge rounded>{{ props.count }}</q-badge>
-                  </template>
-                </q-option-group>
+                  {{ source.label }}
+                  <q-badge rounded>{{ source.count }}</q-badge>
+                </q-toggle>
               </q-scroll-area>
             </q-card-section>
           </q-card>
@@ -178,7 +179,7 @@
                   :options="otr.getLocations"
                   type="checkbox"
                   v-model="otr.locations"
-                  @update:model-value="(val) => otr.filterLocation(val)"
+                  @update:model-value="(val) => otr.filterLocation()"
                 >
                   <template v-slot:label="props">
                     {{ props.label }}
