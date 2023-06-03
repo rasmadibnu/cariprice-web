@@ -54,6 +54,7 @@ export const useOTRStore = defineStore("otr", {
     sources: [],
     minimum_price: null,
     maximum_price: null,
+    loading: false,
   }),
 
   getters: {
@@ -182,6 +183,7 @@ export const useOTRStore = defineStore("otr", {
         });
     },
     searchCars(query) {
+      this.loading = true;
       if (query) {
         return api
           .get("/search/" + query)
@@ -202,9 +204,13 @@ export const useOTRStore = defineStore("otr", {
             this.carListUnsort = this.carList;
             this.metadata = res.data.metadata;
             this.lastSearch = query;
+            this.loading = false;
+
             this.setFilterSource();
           })
           .catch((err) => {
+            this.loading = false;
+
             console.log(err);
           });
       } else {
@@ -213,6 +219,7 @@ export const useOTRStore = defineStore("otr", {
           this.metadata = {};
           this.lastSearch = "";
           resolve(false);
+          this.loading = false;
         });
       }
     },

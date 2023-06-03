@@ -26,30 +26,6 @@
           }}</span></template
         >
       </div>
-      <!-- <q-select
-        label="Source"
-        :options="otr.getSource"
-        v-model="otr.source"
-        @update:model-value="otr.filterSource()"
-        use-chips
-        multiple
-        map-options
-        emit-value
-        class="tw-w-full"
-        borderless
-      >
-        <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-          <q-item v-bind="itemProps">
-            <q-item-section> {{ opt.label }} ({{ opt.count }}) </q-item-section>
-            <q-item-section side>
-              <q-checkbox
-                :model-value="selected"
-                @update:model-value="toggleOption(opt)"
-              />
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select> -->
       <div class="tw-flex tw-justify-between tw-mt-2 tw-items-center tw-w-full">
         <div class="tw-flex tw-items-center tw-gap-4">
           <q-select
@@ -208,23 +184,28 @@
         </template>
       </q-table>
     </template>
-    <div
-      class="tw-flex tw-mt-28 tw-flex-col tw-items-center tw-justify-center"
-      v-if="!isSearch"
-    >
-      <q-avatar size="350px">
-        <q-img src="~assets/search.svg" spinner-color="primary" />
-      </q-avatar>
-      <!-- <h1 class="text-h4">Find some cars? 👀</h1> -->
-    </div>
-    <div
-      class="tw-flex tw-mt-12 tw-flex-col tw-items-center tw-justify-center"
-      v-if="isSearch && otr.carList.length < 1"
-    >
-      <q-avatar size="400px">
-        <q-img src="~assets/not_found.svg" spinner-color="primary" />
-      </q-avatar>
-      <h1 class="text-h2">Car {{ otr.lastSearch }} not found...</h1>
+    <div class="tw-flex tw-flex-col tw-items-center tw-justify-center">
+      <template v-if="this.otr.loading">
+        <q-spinner-cube color="primary" class="tw-mt-40" size="10em" />
+        <h1 class="text-h4 tw-mt-4">Searching.......</h1>
+      </template>
+      <template v-else>
+        <div v-if="!isSearch">
+          <q-avatar size="350px" class="tw-mt-24">
+            <q-img src="~assets/search.svg" spinner-color="primary" />
+          </q-avatar>
+          <!-- <h1 class="text-h4">Find some cars? 👀</h1> -->
+        </div>
+        <div
+          class="tw-flex tw-flex-col tw-items-center tw-justify-center"
+          v-if="isSearch && otr.carList.length < 1"
+        >
+          <q-avatar size="400px" class="tw-mt-12">
+            <q-img src="~assets/not_found.svg" spinner-color="primary" />
+          </q-avatar>
+          <h1 class="text-h2">Car {{ otr.lastSearch }} not found...</h1>
+        </div>
+      </template>
     </div>
   </q-page>
 </template>
