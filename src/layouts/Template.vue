@@ -147,18 +147,17 @@
                 style="max-height: 300px"
                 :style="{ height: 35 * otr.sourceList.length + 'px' }"
               >
-                <q-toggle
-                  v-for="(source, index) in otr.sourceList"
-                  class="tw-w-full"
-                  v-bind:key="index"
-                  v-model="otr.sourceList[index].is_active"
-                  @update:model-value="
-                    otr.filterSource(otr.sourceList[index].is_active)
-                  "
+                <q-option-group
+                  :options="otr.sourceList"
+                  type="checkbox"
+                  v-model="otr.sources"
+                  @update:model-value="(val) => otr.filterData()"
                 >
-                  {{ source.label }}
-                  <q-badge rounded>{{ source.count }}</q-badge>
-                </q-toggle>
+                  <template v-slot:label="props">
+                    {{ props.label }}
+                    <q-badge rounded>{{ props.count }}</q-badge>
+                  </template>
+                </q-option-group>
               </q-scroll-area>
             </q-card-section>
           </q-card>
@@ -179,7 +178,7 @@
                   :options="otr.getLocations"
                   type="checkbox"
                   v-model="otr.locations"
-                  @update:model-value="(val) => otr.filterLocation()"
+                  @update:model-value="(val) => otr.filterData()"
                 >
                   <template v-slot:label="props">
                     {{ props.label }}
@@ -190,18 +189,64 @@
             </q-card-section>
           </q-card>
         </q-expansion-item>
-        <!-- <div class="tw-grid tw-grid-cols-2 tw-mt-4 tw-gap-4">
-          <q-select label="City" class="tw-col-span-2" dense />
-          <q-select label="Brand" class="" dense />
-          <q-select label="Model" class="" dense />
-          <div
-            class="tw-col-span-2 tw-grid tw-grid-cols-2 tw-gap-x-4 tw-gap-y-2"
-          >
-            <div class="tw-col-span-2">Price</div>
-            <q-select label="From" class="" dense />
-            <q-select label="To" class="" dense />
-          </div>
-        </div> -->
+        <q-expansion-item
+          v-model="otr.expanded_price"
+          icon="attach_money"
+          header-class="tw-text-lg tw-font-bold"
+          label="Price"
+        >
+          <q-card>
+            <q-card-section class="tw-space-y-4">
+              <q-select
+                ref="minimum_price"
+                use-input
+                :options="priceOpt"
+                v-model="otr.minimum_price"
+                @new-value="addPriceFilter"
+                @update:model-value="otr.filterData()"
+                clearable
+                filled
+                label="Minimum Price"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ idr(scope.opt) }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:selected>
+                  <template v-if="otr.minimum_price">
+                    {{ idr(otr.minimum_price) }}
+                  </template>
+                </template>
+              </q-select>
+              <q-select
+                use-input
+                :options="priceOpt"
+                v-model="otr.maximum_price"
+                @new-value="addPriceFilter"
+                @update:model-value="otr.filterData()"
+                clearable
+                filled
+                label="Maximum Price"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ idr(scope.opt) }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:selected>
+                  <template v-if="otr.maximum_price">
+                    {{ idr(otr.maximum_price) }}
+                  </template>
+                </template>
+              </q-select>
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
       </template>
       <template v-else>
         <div class="tw-p-4">
@@ -618,6 +663,13 @@ export default {
     const otr = useOTRStore();
     const leftDrawerOpen = ref(false);
     const isOTRPage = ref(false);
+    const priceOpt = ref([
+      "100000000",
+      "300000000",
+      "500000000",
+      "800000000",
+      "1000000000",
+    ]);
 
     return {
       otr,
@@ -630,6 +682,7 @@ export default {
       panelOTR: ref(false),
       detailUnit: ref(false),
       formSave: ref(false),
+      priceOpt,
     };
   },
   mounted() {
@@ -702,6 +755,13 @@ export default {
         this.formSave = false;
         this.panelOTR = false;
       });
+    },
+    addPriceFilter(val) {
+      if (val.length > 0) {
+        if (!this.priceOpt.includes(val)) {
+          this.priceOpt.push(val);
+        }
+      }
     },
   },
   watch: {

@@ -40,6 +40,7 @@ export const useOTRStore = defineStore("otr", {
     locations: [],
     expanded_location: false,
     expanded_source: false,
+    expanded_price: false,
     lastSearch: "",
     sort: "",
     metadata: null,
@@ -50,7 +51,9 @@ export const useOTRStore = defineStore("otr", {
     detailOTR: [],
     otrform: { ...initalForm },
     sourceList: [],
-    source: [],
+    sources: [],
+    minimum_price: null,
+    maximum_price: null,
   }),
 
   getters: {
@@ -66,6 +69,7 @@ export const useOTRStore = defineStore("otr", {
           })
         : [];
       if (location.length > 0) {
+        this.locations = location.map((e) => e.label);
         this.expanded_location = true;
       } else {
         this.expanded_location = false;
@@ -231,42 +235,53 @@ export const useOTRStore = defineStore("otr", {
       this.sourceList = countUnique(
         this.carListUnsort.map((e) => e.source_name)
       );
-      this.sourceList = this.sourceList.map((e) => {
-        return { ...e, is_active: true };
-      });
-      this.source = this.sourceList.map((e) => {
-        return e.value;
-      });
-      if (this.source.length > 0) {
+      this.sources = this.sourceList.map((e) => e.label);
+      if (this.sourceList.length > 0) {
         this.expanded_source = true;
       } else {
         this.expanded_source = false;
       }
     },
-    filterSource(state) {
-      if (state) {
-        this.carList = this.carListUnsort.filter((e) => {
-          return this.sourceList.find((el) => {
-            return el.label == e.source_name;
-          }).is_active;
-        });
-      } else {
-        this.carList = this.carList.filter((e) => {
-          return this.sourceList.find((el) => {
-            return el.label == e.source_name;
-          }).is_active;
-        });
-      }
+    filterData() {
+      this.carList = this.carListUnsort.filter((e) => {
+        if (this.sources.includes(e.source_name)) {
+          if (this.locations.includes(e.location)) {
+            var price = parseInt(e.price);
+            if (this.minimum_price && this.maximum_price) {
+              return (
+                price > parseInt(this.minimum_price) &&
+                price < parseInt(this.maximum_price)
+              );
+            } else if (this.minimum_price) {
+              return parseInt(e.price) > parseInt(this.minimum_price);
+            } else if (this.maximum_price) {
+              return price < parseInt(this.maximum_price);
+            } else {
+              return e;
+            }
+          }
+        }
+      });
+      this.sortCars();
     },
-    filterLocation() {
-      if (this.locations.length > 0) {
-        this.carList = this.carList.filter((e) => {
-          return this.locations.includes(e.location);
-        });
-      } else {
-        this.carList = this.carListUnsort;
-        this.sortCars();
-      }
+    filterPrice() {
+      this.carList = this.carListUnsort.filter((e) => {
+        if (this.sources.includes(e.source_name)) {
+          return e;
+        } else if (this.sources.includes(e.source_name)) {
+          return e;
+        }
+        // if (this.minimum_price && this.maximum_price) {
+        //   return (
+        //     price > parseInt(this.minimum_price) &&
+        //     price < parseInt(this.maximum_price)
+        //   );
+        // } else if (this.minimum_price) {
+        //   return parseInt(e.price) > parseInt(this.minimum_price);
+        // } else if (this.maximum_price) {
+        //   return parseInt(e.price) < parseInt(this.maximum_price);
+        // }
+      });
     },
     addCars(data, index) {
       let contain = this.containsCar(index);
