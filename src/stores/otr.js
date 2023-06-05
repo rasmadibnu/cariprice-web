@@ -293,7 +293,7 @@ export const useOTRStore = defineStore("otr", {
     addCars(data, index) {
       let contain = this.containsCar(index);
       if (!contain) {
-        this.cars.push(data);
+        this.cars.push({ ...data, adjustment: null });
       }
     },
     removeCars(index) {
@@ -321,6 +321,15 @@ export const useOTRStore = defineStore("otr", {
     },
     removeUnit(id) {
       this.detailOTR.splice(id, 1);
+    },
+    adjustPrice(index, price, adjust) {
+      var car = this.cars[index];
+      car.old_price = price;
+      console.log(adjust);
+      // prettier-ignore
+      car.price = new Number(parseFloat(
+        price + (price * (adjust / 100))
+      ).toFixed(2));
     },
   },
 });

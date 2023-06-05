@@ -40,7 +40,7 @@
                   </div>
                   <template v-if="otr.cars.length > 0">
                     <div class="tw-my-4">
-                      <div v-for="car in otr.cars" v-bind:key="car">
+                      <div v-for="(car, index) in otr.cars" v-bind:key="car">
                         <div
                           class="tw-flex tw-justify-between tw-items-center tw-my-1"
                         >
@@ -58,8 +58,39 @@
                             />
                           </div>
 
-                          <div class="text-primary">
-                            {{ idr(car.price) }}
+                          <div v-if="car.adjustment">{{ car.adjustment }}%</div>
+
+                          <div class="tw-cursor-pointer">
+                            <div>
+                              <template v-if="car.adjustment">
+                                <div
+                                  class="tw-line-through tw-text-xs tw-text-right"
+                                >
+                                  {{ idr(car.old_price) }}
+                                </div>
+                              </template>
+                              <div class="text-primary">
+                                {{ idr(car.price) }}
+                              </div>
+                              <q-popup-edit
+                                v-model.number="car.adjustment"
+                                auto-save
+                                v-slot="scope"
+                                @save="
+                                  (val, initval) =>
+                                    otr.adjustPrice(index, car.price, val)
+                                "
+                              >
+                                <q-input
+                                  v-model.number="scope.value"
+                                  label="Adjustment"
+                                  dense
+                                  autofocus
+                                  @keyup.enter="scope.set"
+                                  suffix="%"
+                                />
+                              </q-popup-edit>
+                            </div>
                           </div>
                         </div>
                         <q-separator />
@@ -89,10 +120,11 @@
                         >
                           <q-input
                             v-model.number="scope.value"
+                            label="Depreciation"
                             dense
                             autofocus
-                            counter
                             @keyup.enter="scope.set"
+                            suffix="%"
                           />
                         </q-popup-edit>
                         <div class="text-primary">
@@ -694,11 +726,11 @@ export default {
   },
   methods: {
     onSelect() {
-      if (this.otr.cars.length > 0) {
-        this.panelOTR = true;
-      } else {
-        this.panelOTR = false;
-      }
+      // if (this.otr.cars.length > 0) {
+      //   this.panelOTR = true;
+      // } else {
+      //   this.panelOTR = false;
+      // }
     },
     idr(val) {
       return (
