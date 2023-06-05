@@ -325,7 +325,6 @@ export const useOTRStore = defineStore("otr", {
     adjustPrice(index, price, adjust) {
       var car = this.cars[index];
       car.old_price = price;
-      console.log(adjust);
       // prettier-ignore
       car.price = new Number(parseFloat(
         price + (price * (adjust / 100))
