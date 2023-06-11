@@ -55,6 +55,8 @@ export const useOTRStore = defineStore("otr", {
     minimum_price: null,
     maximum_price: null,
     loading: false,
+    sourceState: false,
+    locationState: false,
   }),
 
   getters: {
@@ -71,6 +73,7 @@ export const useOTRStore = defineStore("otr", {
         : [];
       if (location.length > 0) {
         this.locations = location.map((e) => e.label);
+        this.locationState = true;
         this.expanded_location = true;
       } else {
         this.expanded_location = false;
@@ -86,6 +89,7 @@ export const useOTRStore = defineStore("otr", {
       // prettier-ignore
       return parseFloat(this.getSum / this.cars.length).toFixed(2);
     },
+
     getDepreciation() {
       // prettier-ignore
       return parseFloat(this.getAverage - this.getAverage * (this.depreciation / 100)).toFixed(2);
@@ -244,6 +248,7 @@ export const useOTRStore = defineStore("otr", {
       );
       this.sources = this.sourceList.map((e) => e.label);
       if (this.sourceList.length > 0) {
+        this.sourceState = true;
         this.expanded_source = true;
       } else {
         this.expanded_source = false;
@@ -269,26 +274,11 @@ export const useOTRStore = defineStore("otr", {
           }
         }
       });
+      this.sourceState =
+        this.sources.length == this.sourceList.length ? true : false;
+      this.locationState =
+        this.locations.length == this.getLocations.length ? true : false;
       this.sortCars();
-    },
-    filterPrice() {
-      this.carList = this.carListUnsort.filter((e) => {
-        if (this.sources.includes(e.source_name)) {
-          return e;
-        } else if (this.sources.includes(e.source_name)) {
-          return e;
-        }
-        // if (this.minimum_price && this.maximum_price) {
-        //   return (
-        //     price > parseInt(this.minimum_price) &&
-        //     price < parseInt(this.maximum_price)
-        //   );
-        // } else if (this.minimum_price) {
-        //   return parseInt(e.price) > parseInt(this.minimum_price);
-        // } else if (this.maximum_price) {
-        //   return parseInt(e.price) < parseInt(this.maximum_price);
-        // }
-      });
     },
     addCars(data, index) {
       let contain = this.containsCar(index);
@@ -329,6 +319,22 @@ export const useOTRStore = defineStore("otr", {
       car.price = new Number(parseFloat(
         price + (price * (adjust / 100))
       ).toFixed(2));
+    },
+    filterSource(val, evt) {
+      if (val) {
+        this.setFilterSource();
+      } else {
+        this.sources = [];
+      }
+      this.filterData();
+    },
+    filterLocation(val, evt) {
+      if (val) {
+        this.locations = this.getLocations.map((e) => e.label);
+      } else {
+        this.locations = [];
+      }
+      this.filterData();
     },
   },
 });

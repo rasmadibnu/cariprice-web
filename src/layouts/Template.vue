@@ -58,7 +58,27 @@
                             />
                           </div>
 
-                          <div v-if="car.adjustment">{{ car.adjustment }}%</div>
+                          <div v-if="car.adjustment" class="text-primary">
+                            {{ car.adjustment }}%
+                            <q-popup-edit
+                              v-model.number="car.adjustment"
+                              auto-save
+                              v-slot="scope"
+                              @save="
+                                (val, initval) =>
+                                  otr.adjustPrice(index, car.price, val)
+                              "
+                            >
+                              <q-input
+                                v-model.number="scope.value"
+                                label="Adjustment"
+                                dense
+                                autofocus
+                                @keyup.enter="scope.set"
+                                suffix="%"
+                              />
+                            </q-popup-edit>
+                          </div>
 
                           <div class="tw-cursor-pointer">
                             <div>
@@ -169,12 +189,22 @@
         ><div class="text-h6 tw-px-4 tw-pt-4">Filter</div>
         <q-expansion-item
           v-model="otr.expanded_source"
-          icon="o_travel_explore"
-          header-class="tw-text-lg tw-font-bold"
-          label="Source"
+          header-class="tw-text-lg"
         >
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-checkbox
+                v-model="otr.sourceState"
+                checked-icon="o_travel_explore"
+                unchecked-icon="o_travel_explore"
+                @update:model-value="otr.filterSource"
+                size="lg"
+              />
+            </q-item-section>
+            <q-item-section> Source </q-item-section>
+          </template>
           <q-card>
-            <q-card-section class="q-pa-none tw-ml-2">
+            <q-card-section class="q-pa-none tw-ml-3.5">
               <q-scroll-area
                 style="max-height: 300px"
                 :style="{ height: 35 * otr.sourceList.length + 'px' }"
@@ -196,12 +226,22 @@
         </q-expansion-item>
         <q-expansion-item
           v-model="otr.expanded_location"
-          icon="o_pin_drop"
-          header-class="tw-text-lg tw-font-bold"
-          label="Location"
+          header-class="tw-text-lg"
         >
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-checkbox
+                v-model="otr.locationState"
+                checked-icon="o_pin_drop"
+                unchecked-icon="o_pin_drop"
+                @update:model-value="otr.filterLocation"
+                size="lg"
+              />
+            </q-item-section>
+            <q-item-section class="tw-font-normal"> Location </q-item-section>
+          </template>
           <q-card>
-            <q-card-section class="q-pa-none tw-ml-2">
+            <q-card-section class="q-pa-none tw-ml-3.5">
               <q-scroll-area
                 style="max-height: 300px"
                 :style="{ height: 35 * otr.getLocations.length + 'px' }"
@@ -223,10 +263,19 @@
         </q-expansion-item>
         <q-expansion-item
           v-model="otr.expanded_price"
-          icon="attach_money"
-          header-class="tw-text-lg tw-font-bold"
-          label="Price"
+          header-class="tw-text-lg"
         >
+          <template v-slot:header>
+            <q-item-section avatar>
+              <q-checkbox
+                v-model="price"
+                checked-icon="attach_money"
+                unchecked-icon="attach_money"
+                size="lg"
+              />
+            </q-item-section>
+            <q-item-section> Price </q-item-section>
+          </template>
           <q-card>
             <q-card-section class="tw-space-y-4">
               <q-select
@@ -714,6 +763,7 @@ export default {
       panelOTR: ref(false),
       detailUnit: ref(false),
       formSave: ref(false),
+      price: ref(false),
       priceOpt,
     };
   },
