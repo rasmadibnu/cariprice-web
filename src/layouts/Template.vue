@@ -189,7 +189,7 @@
         ><div class="text-h6 tw-px-4 tw-pt-4">Filter</div>
         <q-expansion-item
           v-model="otr.expanded_source"
-          header-class="tw-text-lg"
+          header-class="tw-text-lg q-py-none"
         >
           <template v-slot:header>
             <q-item-section avatar>
@@ -204,7 +204,7 @@
             <q-item-section> Source </q-item-section>
           </template>
           <q-card>
-            <q-card-section class="q-pa-none tw-ml-3.5">
+            <q-card-section class="q-pa-none tw-ml-5">
               <q-scroll-area
                 style="max-height: 300px"
                 :style="{ height: 35 * otr.sourceList.length + 'px' }"
@@ -226,7 +226,7 @@
         </q-expansion-item>
         <q-expansion-item
           v-model="otr.expanded_location"
-          header-class="tw-text-lg"
+          header-class="tw-text-lg q-py-none"
         >
           <template v-slot:header>
             <q-item-section avatar>
@@ -241,7 +241,7 @@
             <q-item-section class="tw-font-normal"> Location </q-item-section>
           </template>
           <q-card>
-            <q-card-section class="q-pa-none tw-ml-3.5">
+            <q-card-section class="q-pa-none tw-ml-5">
               <q-scroll-area
                 style="max-height: 300px"
                 :style="{ height: 35 * otr.getLocations.length + 'px' }"
@@ -263,7 +263,7 @@
         </q-expansion-item>
         <q-expansion-item
           v-model="otr.expanded_price"
-          header-class="tw-text-lg"
+          header-class="tw-text-lg q-py-none"
         >
           <template v-slot:header>
             <q-item-section avatar>
