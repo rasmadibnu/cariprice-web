@@ -8,7 +8,7 @@ import axios from "axios";
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({
-  baseURL: "http://103.134.154.241:3005//api/v1",
+  baseURL: "https://api-cp.malindosarana.site/api/v1",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
